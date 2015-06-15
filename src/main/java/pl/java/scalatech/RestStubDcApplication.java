@@ -47,7 +47,7 @@ public class RestStubDcApplication implements CommandLineRunner {
             }
             String passwd = Hashing.md5().hashString("" + i, Charsets.UTF_8).toString();
             User user = User.builder().accounts(newArrayList(ba)).address(addresses.get(r.nextInt(addresses.size() - 1)))
-                    .city(cities.get(r.nextInt(cities.size() - 1))).login("p:" + i).email("p:" + i + "@gmail.com").passwd(passwd).phone("" + i)
+                    .city(cities.get(r.nextInt(cities.size() - 1))).login("p_" + i).email("p_" + i + "@gmail.com").passwd(passwd).phone("" + i)
 
                     .build();
             userAccountService.saveUser(user);
