@@ -4,6 +4,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +41,17 @@ public class UserInfoController {
     @RequestMapping(method = RequestMethod.GET, value = "/nip/{nip}")
     public ResponseEntity<User> findUserByNip(@PathVariable("nip") String nip) {
         return new ResponseEntity<>(userAccountService.findUserByNip(nip), HttpStatus.OK);
+    }
+
+    public ResponseEntity<Page<User>> getAllUser(Pageable pagable) {
+        return null;
+
+    }
+
+    @RequestMapping(value = "/paging", method = RequestMethod.GET)
+    HttpEntity<PagedResources<User>> persons(Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<User> persons = userAccountService.getUsers(pageable);
+        return new ResponseEntity<>(assembler.toResource(persons), HttpStatus.OK);
     }
 
 }

@@ -7,6 +7,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +51,11 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Transactional
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public Page<User> getUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
 }

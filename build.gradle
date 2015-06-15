@@ -27,6 +27,10 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+     maven {
+        url "http://repo.codahale.com/"
+    }
+      jcenter()
 }
 
 
@@ -47,6 +51,11 @@ dependencies {
     testCompile("org.easytesting:fest-assert:${festAssertVersion}")
     runtime("com.h2database:h2")
     testCompile("org.springframework.boot:spring-boot-starter-test") 
+    
+    
+        compile 'org.ajar:swagger-spring-mvc-ui:0.4'
+        compile("com.mangofactory:swagger-springmvc:1.0.2")
+  
 }
 
 
