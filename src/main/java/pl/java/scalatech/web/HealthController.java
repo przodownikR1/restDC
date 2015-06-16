@@ -19,11 +19,11 @@ import com.google.common.base.Joiner;
 @RestController
 @Slf4j
 public class HealthController {
-
+    public final static String URL = "/api/appContext";
     @Autowired
     private ApplicationContext applicationContext;
 
-    @RequestMapping(value = "/api/appContext", method = RequestMethod.GET)
+    @RequestMapping(value = URL, method = RequestMethod.GET)
     public ResponseEntity<String> appContext() {
         List<String> names = newArrayList(applicationContext.getBeanDefinitionNames());
         names.sort((String s1, String s2) -> s1.compareTo(s2));

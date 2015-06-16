@@ -36,25 +36,25 @@ public class UserInfoController {
     private final @NonNull UserRepository userRepository;
 
     @RequestMapping(method = RequestMethod.GET, value = "/login/{login}")
-    public ResponseEntity<User> findUserByLogin(@PathVariable("login") String login) {
+    public ResponseEntity<?> findUserByLogin(@PathVariable("login") String login) {
         User loaded = userAccountService.findUserByLogin(login);
         if (loaded != null) { return new ResponseEntity<>(loaded, HttpStatus.OK); }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.notFound().build();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/email/{email}")
-    public ResponseEntity<User> findUserByEmail(@PathVariable("email") String email) {
+    public ResponseEntity<?> findUserByEmail(@PathVariable("email") String email) {
         User loaded = userAccountService.findUserByEmail(email);
         if (loaded != null) { return new ResponseEntity<>(loaded, HttpStatus.OK); }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.notFound().build();
 
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/nip/{nip}")
-    public ResponseEntity<User> findUserByNip(@PathVariable("nip") String nip) {
+    public ResponseEntity<?> findUserByNip(@PathVariable("nip") String nip) {
         User loaded = userAccountService.findUserByNip(nip);
         if (loaded != null) { return new ResponseEntity<>(loaded, HttpStatus.OK); }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.notFound().build();
     }
 
     @RequestMapping(value = "/paging", method = RequestMethod.GET)

@@ -51,10 +51,16 @@ dependencies {
     testCompile("org.easytesting:fest-assert:${festAssertVersion}")
     runtime("com.h2database:h2")
     testCompile("org.springframework.boot:spring-boot-starter-test") 
+       
+    compile 'org.apache.httpcomponents:httpclient:4.5'
+    compile 'org.apache.httpcomponents:httpasyncclient:4.1'
     
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.4'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.5.4'
+    compile 'com.jayway.jsonpath:json-path:2.0.0'
     
-        compile 'org.ajar:swagger-spring-mvc-ui:0.4'
-        compile("com.mangofactory:swagger-springmvc:1.0.2")
+    compile 'org.ajar:swagger-spring-mvc-ui:0.4'
+    compile("com.mangofactory:swagger-springmvc:1.0.2")
   
 }
 

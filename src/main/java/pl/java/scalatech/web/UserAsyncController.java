@@ -20,16 +20,16 @@ import pl.java.scalatech.service.userInformation.UserAccountService;
 @RequestMapping(value = UserInfoController.API, produces = { MediaType.APPLICATION_JSON_VALUE })
 @RequiredArgsConstructor(onConstructor = @_(@Autowired))
 public class UserAsyncController {
-    protected static final String API = "/api/async/users";
+    protected static final String API = "/api/async";
 
     private final @NonNull UserAccountService userAccountService;
     private final @NonNull UserRepository userRepository;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/login/{login}")
-    public ResponseEntity<User> findUserByLogin(@PathVariable("login") String login) {
+    @RequestMapping(method = RequestMethod.GET, value = "/users/login/{login}")
+    public ResponseEntity<?> findUserByLogin(@PathVariable("login") String login) {
         User loaded = userAccountService.findUserByLogin(login);
         if (loaded != null) { return new ResponseEntity<>(loaded, HttpStatus.OK); }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.notFound().build();
     }
 
 }

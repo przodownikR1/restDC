@@ -50,7 +50,21 @@ public class RestExampleController {
     }
 
     @RequestMapping("/noContent")
+    // 204
     public ResponseEntity<Void> noContent() {
         return ResponseEntity.noContent().build();
     }
+
+    @RequestMapping("/badRequest")
+    // 400
+    public ResponseEntity<String> badRequest() {
+        return ResponseEntity.badRequest().body("Bad Request");
+    }
+
+    @RequestMapping("/noFound")
+    // 404
+    public ResponseEntity<Void> noFound() {
+        return ResponseEntity.notFound().build();
+    }
+
 }
