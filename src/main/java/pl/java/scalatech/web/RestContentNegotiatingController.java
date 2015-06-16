@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import pl.java.scalatech.entity.BankAccount;
 import pl.java.scalatech.repository.BankAccountRepository;
 
 @RestController
+@Slf4j
 @RequestMapping(value = RestContentNegotiatingController.URL)
 @RequiredArgsConstructor(onConstructor = @_(@Autowired))
 public class RestContentNegotiatingController {
@@ -32,6 +34,7 @@ public class RestContentNegotiatingController {
     @RequestMapping("/{id}")
     @ResponseBody
     public BankAccount baById(@PathVariable("id") Long id) {
+        log.info("+++  :: id = {}", id);
         return bankAccountRepository.findOne(id);
     }
 
