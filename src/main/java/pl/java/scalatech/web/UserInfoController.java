@@ -1,5 +1,7 @@
 package pl.java.scalatech.web;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -7,6 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -32,12 +35,17 @@ import pl.java.scalatech.service.userInformation.UserAccountService;
 public class UserInfoController {
     protected static final String API = "/api/users";
 
+    private final @NonNull MessageSource messageSource;
     private final @NonNull UserAccountService userAccountService;
     private final @NonNull UserRepository userRepository;
+
+    public static final String ERROR_CODE_USER_EXISTS = "user.creation.exists";
+    public static final String ERROR_CODE_USER_NOT_FOUND = "user.not.found";
 
     @RequestMapping(method = RequestMethod.GET, value = "/login/{login}")
     public ResponseEntity<?> findUserByLogin(@PathVariable("login") String login) {
         User loaded = userAccountService.findUserByLogin(login);
+        String message = messageSource.getMessage(ERROR_CODE_USER_NOT_FOUND, new Object[] { login }, Locale.getDefault());
         if (loaded != null) { return new ResponseEntity<>(loaded, HttpStatus.OK); }
         return ResponseEntity.notFound().build();
     }

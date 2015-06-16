@@ -15,4 +15,11 @@ public class ErrorStatus {
     private HttpStatus status;
     private String message;
     private String url;
+
+    public ErrorStatus(HttpStatus status, String message) {
+        super();
+        this.status = status;
+        this.message = message;
+    }
+
 }

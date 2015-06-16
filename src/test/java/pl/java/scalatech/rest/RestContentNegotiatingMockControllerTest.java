@@ -1,11 +1,14 @@
 package pl.java.scalatech.rest;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.crsh.console.jline.internal.Log;
 import org.hamcrest.Matchers;
@@ -18,17 +21,25 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
 import pl.java.scalatech.config.ApplicationConfig;
 import pl.java.scalatech.entity.BankAccount;
 import pl.java.scalatech.repository.BankAccountRepository;
 import pl.java.scalatech.web.RestContentNegotiatingController;
+
+import com.google.common.collect.Lists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplicationConfig.class)
@@ -40,6 +51,8 @@ public class RestContentNegotiatingMockControllerTest {
 
     private MockMvc mockMvc;
 
+    private RestTemplate restTemplate = new RestTemplate();
+
     @Mock
     private BankAccountRepository bankAccountRepository;
 
@@ -48,6 +61,11 @@ public class RestContentNegotiatingMockControllerTest {
 
     @Before
     public void setup() {
+        List<HttpMessageConverter<?>> converters = Lists.newArrayList();
+        converters.add(new StringHttpMessageConverter());
+        converters.add(new Jaxb2RootElementHttpMessageConverter());
+        converters.add(new MappingJackson2HttpMessageConverter());
+        restTemplate.setMessageConverters(converters);
         MockitoAnnotations.initMocks(this);
 
         mockMvc = MockMvcBuilders.standaloneSetup(restContentNegotiatingController).build();
@@ -68,6 +86,16 @@ public class RestContentNegotiatingMockControllerTest {
         String response = this.mockMvc.perform(get(RestContentNegotiatingController.URL + "/{id}", 1)).andReturn().getResponse().getContentAsString();
         Log.info("+++ cn  response {}", response);
 
+        verify(bankAccountRepository).findOne(1l);
+        verifyNoMoreInteractions(bankAccountRepository);
+
     }
 
+    @Test
+    public void shouldRestContextNegotiationJsonWithParamsAndRestTemplateWork() throws Exception {
+        String uri = RestContentNegotiatingController.URL + "/{id}";
+        ResponseEntity<BankAccount> ba = restTemplate.getForEntity(uri, BankAccount.class, 1l);
+        Log.info("+++  bank account body :  {}", ba.getBody());
+
+    }
 }
