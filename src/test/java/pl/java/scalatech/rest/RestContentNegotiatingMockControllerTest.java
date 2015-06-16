@@ -49,6 +49,7 @@ public class RestContentNegotiatingMockControllerTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+
         mockMvc = MockMvcBuilders.standaloneSetup(restContentNegotiatingController).build();
     }
 
@@ -56,11 +57,14 @@ public class RestContentNegotiatingMockControllerTest {
     public void shouldRestContextNegotiationJsonWithParamsWork() throws Exception {
         Mockito.when(bankAccountRepository.findOne(1l)).thenReturn(
                 BankAccount.builder().amount(new BigDecimal("1000")).creditCardNumer("120003430023").debit(new BigDecimal("900")).build());
+
         this.mockMvc.perform(get(RestContentNegotiatingController.URL + "/{id}", 1).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json")).andExpect(jsonPath("$.creditCardNumer").value("120003430023"))
                 .andExpect(jsonPath("$.debit").value(900d)).andExpect(jsonPath("$.amount", Matchers.is(1000.0)));
+
         this.mockMvc.perform(get(RestContentNegotiatingController.URL + "/{id}", 1).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(content().string(Matchers.not(Matchers.isEmptyOrNullString())));
+
         String response = this.mockMvc.perform(get(RestContentNegotiatingController.URL + "/{id}", 1)).andReturn().getResponse().getContentAsString();
         Log.info("+++ cn  response {}", response);
 
