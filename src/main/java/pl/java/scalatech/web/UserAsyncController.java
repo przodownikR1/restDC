@@ -130,6 +130,7 @@ public class UserAsyncController {
 }
 
 // TODO try to make generic mechanism
+
 @Slf4j
 class SuccessCallBackUtil<T, E> {
     public static <T extends ResponseEntity<?>, E extends Serializable> void callBack(DeferredResult<T> deferredResult, ListenableFuture<E> listener) {
