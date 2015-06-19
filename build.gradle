@@ -74,6 +74,10 @@ eclipse {
     }
 }
 
+println "Using Spring Boot version: [$springBootVersion]"
+println "Using Java version: [" + System.getProperty("java.version") + "]"
+
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }
