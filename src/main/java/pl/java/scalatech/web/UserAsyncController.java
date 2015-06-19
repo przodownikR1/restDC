@@ -34,7 +34,7 @@ import pl.java.scalatech.service.async.userInformation.UserAccountAsyncService;
 
 @RestController
 @Slf4j
-@RequestMapping(value = UserInfoController.API, produces = { MediaType.APPLICATION_JSON_VALUE })
+@RequestMapping(value = UserAsyncController.API, produces = { MediaType.APPLICATION_JSON_VALUE })
 @RequiredArgsConstructor(onConstructor = @_(@Autowired))
 public class UserAsyncController {
     protected static final String API = "/api/async";

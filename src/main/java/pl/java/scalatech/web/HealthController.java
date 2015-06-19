@@ -32,4 +32,9 @@ public class HealthController {
         return new ResponseEntity<>(appContext, HttpStatus.OK);
     }
 
+    @RequestMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
+
 }
