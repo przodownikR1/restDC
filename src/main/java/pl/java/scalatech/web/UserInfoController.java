@@ -1,6 +1,7 @@
 package pl.java.scalatech.web;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,24 +45,24 @@ public class UserInfoController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/login/{login}")
     public ResponseEntity<?> findUserByLogin(@PathVariable("login") String login) {
-        User loaded = userAccountService.findUserByLogin(login);
+        Optional<User> loaded = userAccountService.findUserByLogin(login);
         String message = messageSource.getMessage(ERROR_CODE_USER_NOT_FOUND, new Object[] { login }, Locale.getDefault());
-        if (loaded != null) { return new ResponseEntity<>(loaded, HttpStatus.OK); }
+        if (loaded.isPresent()) { return ResponseEntity.ok(loaded.get()); }
         return ResponseEntity.notFound().build();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/email/{email}")
     public ResponseEntity<?> findUserByEmail(@PathVariable("email") String email) {
-        User loaded = userAccountService.findUserByEmail(email);
-        if (loaded != null) { return new ResponseEntity<>(loaded, HttpStatus.OK); }
+        Optional<User> loaded = userAccountService.findUserByEmail(email);
+        if (loaded.isPresent()) { return ResponseEntity.ok(loaded.get()); }
         return ResponseEntity.notFound().build();
 
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/nip/{nip}")
     public ResponseEntity<?> findUserByNip(@PathVariable("nip") String nip) {
-        User loaded = userAccountService.findUserByNip(nip);
-        if (loaded != null) { return new ResponseEntity<>(loaded, HttpStatus.OK); }
+        Optional<User> loaded = userAccountService.findUserByNip(nip);
+        if (loaded.isPresent()) { return ResponseEntity.ok(loaded.get()); }
         return ResponseEntity.notFound().build();
     }
 

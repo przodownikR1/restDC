@@ -1,5 +1,7 @@
 package pl.java.scalatech.service.userInformation;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -7,11 +9,11 @@ import pl.java.scalatech.entity.User;
 
 public interface UserAccountService {
 
-    User findUserByLogin(String login);
+    Optional<User> findUserByLogin(String login);
 
-    User findUserByEmail(String email);
+    Optional<User> findUserByEmail(String email);
 
-    User findUserByNip(String nip);
+    Optional<User> findUserByNip(String nip);
 
     void removeUser(User user);
 

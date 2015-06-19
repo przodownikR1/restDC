@@ -1,5 +1,7 @@
 package pl.java.scalatech.service.userInformation.impl;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
 import lombok.Getter;
@@ -27,17 +29,17 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final @Nonnull BankAccountRepository bankAccountRepository;
 
     @Override
-    public User findUserByLogin(String login) {
+    public Optional<User> findUserByLogin(String login) {
         return userRepository.findUserByLogin(login);
     }
 
     @Override
-    public User findUserByEmail(String email) {
+    public Optional<User> findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
 
     @Override
-    public User findUserByNip(String nip) {
+    public Optional<User> findUserByNip(String nip) {
         return userRepository.findUserByNip(nip);
     }
 

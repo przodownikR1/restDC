@@ -1,5 +1,7 @@
 package pl.java.scalatech.service.async.userInformation.impl;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
 import lombok.Getter;
@@ -32,19 +34,19 @@ public class UserAccountAsyncServiceImpl implements UserAccountAsyncService {
 
     @Override
     @Async
-    public ListenableFuture<User> findUserByLogin(String login) {
+    public ListenableFuture<Optional<User>> findUserByLogin(String login) {
         return new AsyncResult<>(userRepository.findUserByLogin(login));
     }
 
     @Override
     @Async
-    public ListenableFuture<User> findUserByEmail(String email) {
+    public ListenableFuture<Optional<User>> findUserByEmail(String email) {
         return new AsyncResult<>(userRepository.findUserByEmail(email));
     }
 
     @Override
     @Async
-    public ListenableFuture<User> findUserByNip(String nip) {
+    public ListenableFuture<Optional<User>> findUserByNip(String nip) {
         return new AsyncResult<>(userRepository.findUserByNip(nip));
     }
 

@@ -1,7 +1,7 @@
 package pl.java.scalatech.web;
 
 import java.io.Serializable;
-import java.util.concurrent.ExecutionException;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,17 +42,10 @@ public class UserAsyncController {
     private final @NonNull UserAccountAsyncService userAccountAsyncService;
     private final @NonNull UserRepository userRepository;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/users/login/{login}")
-    public ResponseEntity<?> findUserByLogin_firstApproach(@PathVariable("login") String login) throws InterruptedException, ExecutionException {
-        User loaded = userAccountAsyncService.findUserByLogin(login).get();
-        if (loaded != null) { return new ResponseEntity<>(loaded, HttpStatus.OK); }
-        return ResponseEntity.notFound().build();
-    }
-
     @RequestMapping("/users/login/{login}")
     DeferredResult<ResponseEntity<?>> findUserByLogin(@PathVariable("login") String login) {
         DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
-        ListenableFuture<User> listener = userAccountAsyncService.findUserByLogin(login);
+        ListenableFuture<Optional<User>> listener = userAccountAsyncService.findUserByLogin(login);
         userCallBack(deferredResult, listener);
         return deferredResult;
     }
@@ -60,7 +53,7 @@ public class UserAsyncController {
     @RequestMapping("/users/email/{email}")
     DeferredResult<ResponseEntity<?>> findUserByEmail(@PathVariable("email") String email) {
         DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
-        ListenableFuture<User> listener = userAccountAsyncService.findUserByEmail(email);
+        ListenableFuture<Optional<User>> listener = userAccountAsyncService.findUserByEmail(email);
         userCallBack(deferredResult, listener);
         return deferredResult;
     }
@@ -68,7 +61,7 @@ public class UserAsyncController {
     @RequestMapping("/users/nip/{nip}")
     DeferredResult<ResponseEntity<?>> findUserByNip(@PathVariable("nip") String nip) {
         DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
-        ListenableFuture<User> listener = userAccountAsyncService.findUserByNip(nip);
+        ListenableFuture<Optional<User>> listener = userAccountAsyncService.findUserByNip(nip);
         userCallBack(deferredResult, listener);
         return deferredResult;
     }
@@ -98,7 +91,7 @@ public class UserAsyncController {
     public DeferredResult<ResponseEntity<?>> insertUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
         DeferredResult<ResponseEntity<?>> deferredResult = new DeferredResult<>();
         ListenableFuture<User> listener = userAccountAsyncService.saveUser(user);
-        userCallBack(deferredResult, listener);
+        userCallBackWithoutOptional(deferredResult, listener);
         return deferredResult;
     }
 
@@ -113,9 +106,25 @@ public class UserAsyncController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    private void userCallBack(DeferredResult<ResponseEntity<?>> deferredResult, ListenableFuture<User> listener) {
+    // TODO double the same method Optional/Without Optional = this same login, diffrent method signatures
+    private void userCallBackWithoutOptional(DeferredResult<ResponseEntity<?>> deferredResult, ListenableFuture<User> listener) {
         SuccessCallback<User> successCallback = user -> {
             ResponseEntity<User> responseEntity = new ResponseEntity<>(user, HttpStatus.OK);
+            deferredResult.setResult(responseEntity);
+        };
+        FailureCallback failureCallback = throwable -> {
+            log.error("Failed to retrieve result from ds", throwable);
+            ResponseEntity<Void> responseEntity = new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+            deferredResult.setResult(responseEntity);
+        };
+
+        listener.addCallback(successCallback, failureCallback);
+    }
+
+    private void userCallBack(DeferredResult<ResponseEntity<?>> deferredResult, ListenableFuture<Optional<User>> listener) {
+        SuccessCallback<? super Optional<User>> successCallback = user -> {
+            // TODO user get ? ifPresent
+            ResponseEntity<User> responseEntity = new ResponseEntity<>(user.get(), HttpStatus.OK);
             deferredResult.setResult(responseEntity);
         };
         FailureCallback failureCallback = throwable -> {
@@ -133,7 +142,7 @@ public class UserAsyncController {
 
 @Slf4j
 class SuccessCallBackUtil<T, E> {
-    public static <T extends ResponseEntity<?>, E extends Serializable> void callBack(DeferredResult<T> deferredResult, ListenableFuture<E> listener) {
+    public static <T extends ResponseEntity<?>, E extends Serializable> void callBack(DeferredResult<T> deferredResult, ListenableFuture<Optional<E>> listener) {
         SuccessCallback<E> successCallback = obj -> {
             ResponseEntity<E> responseEntity = new ResponseEntity<>(obj, HttpStatus.OK);
             deferredResult.setResult((T) responseEntity);
