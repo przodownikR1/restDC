@@ -13,7 +13,7 @@ public interface UserAccountService {
 
     Optional<User> findUserByEmail(String email);
 
-    Optional<User> findUserByNip(String nip);
+    User findUserByNip(String nip);
 
     void removeUser(User user);
 

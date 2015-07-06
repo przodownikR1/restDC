@@ -12,4 +12,5 @@ ext {
       guavaVersion = "18.0"
       javaVersion = "1.8"
       springVersion = "4.1.6.RELEASE"
+      hystrixVersion="1.4.12"
 }
