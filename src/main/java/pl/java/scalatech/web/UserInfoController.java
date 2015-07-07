@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import pl.java.scalatech.entity.User;
+import pl.java.scalatech.exception.UserNotFoundException;
 import pl.java.scalatech.repository.UserRepository;
 import pl.java.scalatech.service.userInformation.UserAccountService;
 
@@ -61,9 +62,15 @@ public class UserInfoController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/nip/{nip}")
     public ResponseEntity<?> findUserByNip(@PathVariable("nip") String nip) {
-        Optional<User> loaded = userAccountService.findUserByNip(nip);
-        if (loaded.isPresent()) { return ResponseEntity.ok(loaded.get()); }
-        return ResponseEntity.notFound().build();
+        ResponseEntity<?> result;
+        try {
+            User loaded = userAccountService.findUserByNip(nip);
+            result = ResponseEntity.ok(loaded);
+        } catch (UserNotFoundException unfe) {
+            result = ResponseEntity.notFound().build();
+        }
+
+        return result;
     }
 
     @RequestMapping(value = "/paging", method = RequestMethod.GET)

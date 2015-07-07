@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.2.4.RELEASE'
+        springBootVersion = '1.2.5.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -10,10 +10,8 @@ buildscript {
         classpath("io.spring.gradle:dependency-management-plugin:0.5.1.RELEASE")
     }
 }
-
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
+apply plugin: "groovy"
 apply plugin: 'spring-boot'
 apply from: './properties.gradle' 
 apply plugin: 'io.spring.dependency-management' 
@@ -33,27 +31,43 @@ repositories {
       jcenter()
 }
 
+sourceSets {
+   
+    main {
+        java { srcDir 'src/main/java' }
+        groovy { srcDir 'src/main/groovy' }
+        resources { srcDir 'src/main/resources' }
+    }
+    test {
+        java { srcDir 'src/test/java' }
+        groovy { srcDir 'src/test/groovy' }
+        resources { srcDir 'src/test/resources' }
+    }
+}
+
+
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile ("org.springframework.boot:spring-boot-starter-remote-shell")
     compile("org.springframework.boot:spring-boot-starter-aop")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework.boot:spring-boot-starter-data-rest")
     compile("org.springframework.boot:spring-boot-starter-hateoas")
-    compile("org.springframework.boot:spring-boot-starter-remote-shell")
-    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-starter-web")
     compile ("com.google.guava:guava:latest.release") 
     compile ("org.projectlombok:lombok:latest.release")
     testCompile("org.hamcrest:hamcrest-all:$hamcrestVersion")
     testCompile("org.mockito:mockito-all:$mockitoVersion")
-    testCompile("junit:junit:$junitVersion")
-    testCompile("org.easytesting:fest-assert:${festAssertVersion}")
+    testCompile("junit:junit:latest.release")
+    testCompile("org.easytesting:fest-assert:latest.release")
     runtime("com.h2database:h2")
     testCompile("org.springframework.boot:spring-boot-starter-test") 
        
-    compile 'org.apache.httpcomponents:httpclient:4.5'
+
     compile 'org.apache.httpcomponents:httpasyncclient:4.1'
+    compile("org.apache.httpcomponents:httpclient:${httpClientVersion}")
+    compile("org.apache.httpcomponents:fluent-hc:${httpClientVersion}")
     
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.4'
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.5.4'
@@ -61,23 +75,34 @@ dependencies {
     
     compile 'org.ajar:swagger-spring-mvc-ui:0.4'
     compile("com.mangofactory:swagger-springmvc:1.0.2")
-    compile 'org.jolokia:jolokia-core:1.3.1'
+     compile 'org.jolokia:jolokia-core:1.3.1'
     
-  
+    
+    compile("com.codahale.metrics:metrics-core:${codahale}")
+    compile("com.codahale.metrics:metrics-jvm:${codahale}")
+    compile("com.codahale.metrics:metrics-logback:${codahale}")
+    
+    compile("com.ryantenney.metrics:metrics-spring:3.0.1")
+    compile("com.codahale.metrics:metrics-servlet:${codahale}")
+    compile("com.codahale.metrics:metrics-servlets:${codahale}")
+    
+    compile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    compile 'org.codehaus.groovy:groovy-all:2.4.3'
+    
+    compile 'com.netflix.hystrix:hystrix-core:1.4.12'
+    compile 'com.netflix.hystrix:hystrix-javanica:1.4.12'
+    compile 'com.netflix.hystrix:hystrix-request-servlet:1.4.12'
+    compile 'com.netflix.hystrix:hystrix-metrics-event-stream:1.4.12'
+    compile 'com.netflix.hystrix:hystrix-codahale-metrics-publisher:1.4.12'
+        
 }
 
 
-eclipse {
-    classpath {
-         containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
-         containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
-    }
-}
 
 println "Using Spring Boot version: [$springBootVersion]"
 println "Using Java version: [" + System.getProperty("java.version") + "]"
 
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
+   
 }

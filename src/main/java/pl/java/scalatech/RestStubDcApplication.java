@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
+import pl.java.scalatech.config.Metrics2Config;
 import pl.java.scalatech.entity.BankAccount;
 import pl.java.scalatech.entity.User;
 import pl.java.scalatech.service.userInformation.UserAccountService;
@@ -20,6 +22,7 @@ import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 
 @SpringBootApplication
+@Import(Metrics2Config.class)
 public class RestStubDcApplication implements CommandLineRunner {
     @Autowired
     private UserAccountService userAccountService;

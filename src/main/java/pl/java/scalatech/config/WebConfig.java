@@ -1,18 +1,17 @@
 package pl.java.scalatech.config;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.servlet.MultipartConfigElement;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.MultipartConfigFactory;
+import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
@@ -23,19 +22,31 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-import org.thymeleaf.templateresolver.TemplateResolver;
 
 import pl.java.scalatech.web.interceptor.SwaggerInterceptor;
+
+import com.netflix.hystrix.contrib.javanica.aop.aspectj.HystrixCommandAspect;
+import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
 
 @Configuration
 @EnableWebMvc
 @Slf4j
 @Profile(value = "dev")
+@EnableAspectJAutoProxy
 @ComponentScan(basePackages = { "pl.java.scalatech.web" }, useDefaultFilters = false, includeFilters = { @Filter(Controller.class) })
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private Environment env;
+
+    @Bean
+    public ServletRegistrationBean servletRegistrationBean() {
+        return new ServletRegistrationBean(new HystrixMetricsStreamServlet(), "/hystrix.stream");
+    }
+
+    @Bean
+    public HystrixCommandAspect hystrixCommandAspect() {
+        return new HystrixCommandAspect();
+    }
 
     @Bean
     MultipartConfigElement multipartConfigElement() {
@@ -66,23 +77,24 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
 
     // @Bean
-    public TemplateResolver templateResolver() {
-        ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
-        templateResolver.setPrefix("/templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML5");
-        List<String> profiles = Arrays.asList(env.getActiveProfiles());
-        if (profiles.contains("dev")) {
-            templateResolver.setCacheable(false);
-            log.info("++++ templateResolver cache off ... -> dev");
-
-        }
-        // TODO
-        templateResolver.setCacheable(false);
-        templateResolver.setCharacterEncoding("UTF-8");
-        templateResolver.setOrder(2);
-        return templateResolver;
-    }
+    /*
+     * public TemplateResolver templateResolver() {
+     * ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
+     * templateResolver.setPrefix("/templates/");
+     * templateResolver.setSuffix(".html");
+     * templateResolver.setTemplateMode("HTML5");
+     * List<String> profiles = Arrays.asList(env.getActiveProfiles());
+     * if (profiles.contains("dev")) {
+     * templateResolver.setCacheable(false);
+     * log.info("++++ templateResolver cache off ... -> dev");
+     * }
+     * // TODO
+     * templateResolver.setCacheable(false);
+     * templateResolver.setCharacterEncoding("UTF-8");
+     * templateResolver.setOrder(2);
+     * return templateResolver;
+     * }
+     */
 
     /*
      * @Override

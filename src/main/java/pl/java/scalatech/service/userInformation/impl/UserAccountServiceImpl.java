@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pl.java.scalatech.entity.User;
+import pl.java.scalatech.exception.UserNotFoundException;
 import pl.java.scalatech.repository.BankAccountRepository;
 import pl.java.scalatech.repository.UserRepository;
 import pl.java.scalatech.service.userInformation.UserAccountService;
@@ -39,14 +40,21 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public Optional<User> findUserByNip(String nip) {
-        return userRepository.findUserByNip(nip);
+    public User findUserByNip(String nip) {
+        Optional<User> result = userRepository.findUserByNip(nip);
+        return result.orElseThrow(() -> new UserNotFoundException(nip));
+
     }
 
     @Override
     @Transactional
     public void removeUser(User user) {
-        userRepository.delete(user);
+        Optional<User> loadedUser = findUserByLogin(user.getLogin());
+        if (loadedUser.isPresent()) {
+            userRepository.delete(user);
+        } else {
+            throw new UserNotFoundException();
+        }
     }
 
     @Override
