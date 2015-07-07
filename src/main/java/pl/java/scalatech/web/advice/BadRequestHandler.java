@@ -11,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,7 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 import pl.java.scalatech.exception.rest.BadRequestException;
 import pl.java.scalatech.web.advice.dto.ErrorHolder;
 
-@ControllerAdvice
+// @ControllerAdvice
 @Slf4j
 public class BadRequestHandler extends ErrorHandler<BadRequestException> {
 

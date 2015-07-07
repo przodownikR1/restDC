@@ -11,6 +11,8 @@ ext {
       lombokVersion = "1.16.2"
       guavaVersion = "18.0"
       javaVersion = "1.8"
-      springVersion = "4.1.6.RELEASE"
+      springVersion = "4.1.7.RELEASE"
       hystrixVersion="1.4.12"
+       codahale="3.0.2"
+        httpClientVersion="4.3.5"
 }
