@@ -98,7 +98,8 @@ public class Metrics2Config extends MetricsConfigurerAdapter {
 
     @Bean
     @Autowired
-    public ServletRegistrationBean servletRegistrationBean(MetricRegistry metricRegistry) {
+    public ServletRegistrationBean metrics(MetricRegistry metricRegistry) {
+        log.info("+++                               metrics");
         MetricsServlet ms = new MetricsServlet(metricRegistry);
         ServletRegistrationBean srb = new ServletRegistrationBean(ms, "/stats/*");
         srb.setLoadOnStartup(1);
@@ -107,8 +108,9 @@ public class Metrics2Config extends MetricsConfigurerAdapter {
 
     @Bean
     @Autowired
-    public ServletRegistrationBean servletHealthRegistryBean(HealthCheckRegistry healthCheckRegistry) {
+    public ServletRegistrationBean health(HealthCheckRegistry healthCheckRegistry) {
         HealthCheckServlet hc = new HealthCheckServlet(healthCheckRegistry);
+        log.info("+++                               health");
         ServletRegistrationBean srb = new ServletRegistrationBean(hc, "/health/*");
         srb.setLoadOnStartup(2);
         return srb;
