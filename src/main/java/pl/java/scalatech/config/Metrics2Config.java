@@ -1,6 +1,5 @@
 package pl.java.scalatech.config;
 
-import java.lang.management.ManagementFactory;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -27,11 +26,8 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.codahale.metrics.health.jvm.ThreadDeadlockHealthCheck;
-import com.codahale.metrics.jvm.BufferPoolMetricSet;
-import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
-import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.codahale.metrics.servlets.HealthCheckServlet;
 import com.codahale.metrics.servlets.MetricsServlet;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
@@ -56,9 +52,9 @@ public class Metrics2Config extends MetricsConfigurerAdapter {
     public MetricRegistry getMetricRegistry() {
         metricRegistry.registerAll(new GarbageCollectorMetricSet());
         metricRegistry.registerAll(new MemoryUsageGaugeSet());
-        metricRegistry.registerAll(new ThreadStatesGaugeSet());
-        metricRegistry.register("jvm.files", new FileDescriptorRatioGauge());
-        metricRegistry.register("jvm.buffers", new BufferPoolMetricSet(ManagementFactory.getPlatformMBeanServer()));
+        //metricRegistry.registerAll(new ThreadStatesGaugeSet());
+        //metricRegistry.register("jvm.files", new FileDescriptorRatioGauge());
+        // metricRegistry.register("jvm.buffers", new BufferPoolMetricSet(ManagementFactory.getPlatformMBeanServer()));
         metricRegistry.register(MetricRegistry.name("przodownik", "gauge", "size"), new Gauge<Integer>() {
             Random random = new Random();
 
@@ -104,7 +100,7 @@ public class Metrics2Config extends MetricsConfigurerAdapter {
     @Autowired
     public ServletRegistrationBean servletRegistrationBean(MetricRegistry metricRegistry) {
         MetricsServlet ms = new MetricsServlet(metricRegistry);
-        ServletRegistrationBean srb = new ServletRegistrationBean(ms, "/code/metrics/*");
+        ServletRegistrationBean srb = new ServletRegistrationBean(ms, "/stats/*");
         srb.setLoadOnStartup(1);
         return srb;
     }
@@ -117,5 +113,4 @@ public class Metrics2Config extends MetricsConfigurerAdapter {
         srb.setLoadOnStartup(2);
         return srb;
     }
-
 }

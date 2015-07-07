@@ -1,8 +1,5 @@
 package pl.java.scalatech.config;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.servlet.MultipartConfigElement;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +22,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-import org.thymeleaf.templateresolver.TemplateResolver;
 
 import pl.java.scalatech.web.interceptor.SwaggerInterceptor;
 
@@ -82,23 +77,24 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
 
     // @Bean
-    public TemplateResolver templateResolver() {
-        ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
-        templateResolver.setPrefix("/templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML5");
-        List<String> profiles = Arrays.asList(env.getActiveProfiles());
-        if (profiles.contains("dev")) {
-            templateResolver.setCacheable(false);
-            log.info("++++ templateResolver cache off ... -> dev");
-
-        }
-        // TODO
-        templateResolver.setCacheable(false);
-        templateResolver.setCharacterEncoding("UTF-8");
-        templateResolver.setOrder(2);
-        return templateResolver;
-    }
+    /*
+     * public TemplateResolver templateResolver() {
+     * ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
+     * templateResolver.setPrefix("/templates/");
+     * templateResolver.setSuffix(".html");
+     * templateResolver.setTemplateMode("HTML5");
+     * List<String> profiles = Arrays.asList(env.getActiveProfiles());
+     * if (profiles.contains("dev")) {
+     * templateResolver.setCacheable(false);
+     * log.info("++++ templateResolver cache off ... -> dev");
+     * }
+     * // TODO
+     * templateResolver.setCacheable(false);
+     * templateResolver.setCharacterEncoding("UTF-8");
+     * templateResolver.setOrder(2);
+     * return templateResolver;
+     * }
+     */
 
     /*
      * @Override
