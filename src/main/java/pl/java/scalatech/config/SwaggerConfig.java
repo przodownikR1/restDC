@@ -9,11 +9,6 @@ import com.mangofactory.swagger.models.dto.ApiInfo;
 import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 
-/**
- * @author Sławomir Borowiec
- *         Module name : Cep
- *         Creating time : 9 wrz 2014 14:05:38
- */
 @Configuration
 @EnableSwagger
 // /@Profile("dev")
