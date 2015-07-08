@@ -10,7 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.crsh.console.jline.internal.Log;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
-import pl.java.scalatech.config.ApplicationConfig;
+import pl.java.scalatech.config.TransactionConfig;
+import pl.java.scalatech.config.WebConfig;
 import pl.java.scalatech.entity.BankAccount;
 import pl.java.scalatech.repository.BankAccountRepository;
 import pl.java.scalatech.web.RestContentNegotiatingController;
@@ -42,9 +44,10 @@ import pl.java.scalatech.web.RestContentNegotiatingController;
 import com.google.common.collect.Lists;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ApplicationConfig.class)
+@ContextConfiguration(classes = { WebConfig.class, TransactionConfig.class })
 @WebAppConfiguration
-@IntegrationTest
+@IntegrationTest({ "debug=true", "server.port=9000" })
+@Slf4j
 public class RestContentNegotiatingMockControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -84,7 +87,7 @@ public class RestContentNegotiatingMockControllerTest {
                 .andExpect(content().string(Matchers.not(Matchers.isEmptyOrNullString())));
 
         String response = this.mockMvc.perform(get(RestContentNegotiatingController.URL + "/{id}", 1)).andReturn().getResponse().getContentAsString();
-        Log.info("+++ cn  response {}", response);
+        log.info("+++ cn  response {}", response);
 
         verify(bankAccountRepository).findOne(1l);
         verifyNoMoreInteractions(bankAccountRepository);
@@ -93,9 +96,12 @@ public class RestContentNegotiatingMockControllerTest {
 
     @Test
     public void shouldRestContextNegotiationJsonWithParamsAndRestTemplateWork() throws Exception {
+        Mockito.when(bankAccountRepository.findOne(1l)).thenReturn(
+                BankAccount.builder().amount(new BigDecimal("1000")).creditCardNumer("120003430023").debit(new BigDecimal("900")).build());
+
         String uri = RestContentNegotiatingController.URL + "/{id}";
         ResponseEntity<BankAccount> ba = restTemplate.getForEntity(uri, BankAccount.class, 1l);
-        Log.info("+++  bank account body :  {}", ba.getBody());
+        log.info("+++  bank account body :  {}", ba.getBody());
 
     }
 }

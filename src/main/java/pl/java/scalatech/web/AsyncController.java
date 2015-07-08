@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.SuccessCallback;
@@ -16,6 +17,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 @Slf4j
 @RestController
+@Profile("webTest")
 public class AsyncController {
 
     private final AsyncRestOperations restOperations = new AsyncRestTemplate();

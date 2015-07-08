@@ -8,12 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import pl.java.scalatech.entity.BankAccount;
 
-@Component
+// @Component
 @Slf4j
 public class PeriodicInvokeRest {
 
@@ -32,6 +31,7 @@ public class PeriodicInvokeRest {
         if (id == 0)
             id++;
         log.info("id {}", id);
+
         ResponseEntity<BankAccount> ba = restTemplate.getForEntity(url, BankAccount.class, id);
         log.info(" bankAccount {id} :  {} ", ba.getBody());
     }

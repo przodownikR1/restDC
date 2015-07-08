@@ -3,6 +3,7 @@ package pl.java.scalatech.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
@@ -11,7 +12,7 @@ import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 
 @Configuration
 @EnableSwagger
-// /@Profile("dev")
+@Profile("dev")
 public class SwaggerConfig {
     private SpringSwaggerConfig springSwaggerConfig;
 

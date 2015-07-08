@@ -16,6 +16,7 @@ import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 import pl.java.scalatech.metrics.BasicHealthCheck;
@@ -42,6 +43,7 @@ import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 @Configuration
 @EnableMetrics
 @Slf4j
+@Profile("dev")
 public class Metrics2Config extends MetricsConfigurerAdapter implements EnvironmentAware {
     private static final String ENABLE_METRICS = "metrics";
     private static final String METRIC_JMX_ENABLED = "jmx.enabled";
@@ -68,9 +70,8 @@ public class Metrics2Config extends MetricsConfigurerAdapter implements Environm
     @Bean
     @Override
     public MetricRegistry getMetricRegistry() {
-        METRIC_REGISTRY.registerAll(new GarbageCollectorMetricSet());
-        METRIC_REGISTRY.registerAll(new MemoryUsageGaugeSet());
-        METRIC_REGISTRY.registerAll(new ThreadStatesGaugeSet());
+        METRIC_REGISTRY.register(METRIC_JVM_GARBAGE, new GarbageCollectorMetricSet());
+        METRIC_REGISTRY.register(METRIC_JVM_THREADS, new ThreadStatesGaugeSet());
         METRIC_REGISTRY.register(METRIC_JVM_MEMORY, new MemoryUsageGaugeSet());
         /*
          * METRIC_REGISTRY.register(METRIC_JVM_FILES, new FileDescriptorRatioGauge());
