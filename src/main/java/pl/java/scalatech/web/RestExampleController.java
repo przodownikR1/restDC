@@ -9,6 +9,7 @@ import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import pl.java.scalatech.entity.User;
 @RestController
 @Slf4j
 @RequestMapping("/example")
+@Profile("webTest")
 public class RestExampleController {
 
     private Random random = new Random();

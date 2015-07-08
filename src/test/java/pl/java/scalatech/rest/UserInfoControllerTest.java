@@ -11,12 +11,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import pl.java.scalatech.config.ApplicationConfig;
+import pl.java.scalatech.config.TransactionConfig;
+import pl.java.scalatech.config.WebConfig;
 import pl.java.scalatech.repository.BankAccountRepository;
 import pl.java.scalatech.repository.UserRepository;
 import pl.java.scalatech.web.UserInfoController;
 
-@ContextConfiguration(classes = ApplicationConfig.class)
+@ContextConfiguration(classes = { WebConfig.class, TransactionConfig.class })
 @WebAppConfiguration
 @IntegrationTest
 public class UserInfoControllerTest {

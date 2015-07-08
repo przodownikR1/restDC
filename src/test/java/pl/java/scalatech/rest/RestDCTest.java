@@ -5,8 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import lombok.extern.slf4j.Slf4j;
 
-import org.crsh.console.jline.internal.Log;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,8 @@ import pl.java.scalatech.web.RestContentNegotiatingController;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = RestStubDcApplication.class)
 @WebAppConfiguration
-@IntegrationTest
+@Slf4j
+@IntegrationTest({ "debug=true", "server.port=9000" })
 public class RestDCTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -55,7 +56,7 @@ public class RestDCTest {
                 .andExpect(content().contentTypeCompatibleWith("application/json")).andExpect(jsonPath("$.creditCardNumer").value("120003430023"))
                 .andExpect(jsonPath("$.debit").value(900)).andExpect(jsonPath("$.amount", is(1000)));
         String response = this.mockMvc.perform(get(RestContentNegotiatingController.URL)).andReturn().getResponse().getContentAsString();
-        Log.info("+++ cn  response {}", response);
+        log.info("+++ cn  response {}", response);
 
     }
 
@@ -64,7 +65,7 @@ public class RestDCTest {
         this.mockMvc.perform(get(RestContentNegotiatingController.URL).accept(MediaType.APPLICATION_XML_VALUE)).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/xml"));
         String response = this.mockMvc.perform(get(RestContentNegotiatingController.URL)).andReturn().getResponse().getContentAsString();
-        Log.info("+++ cn  response {}", response);
+        log.info("+++ cn  response {}", response);
 
     }
 }

@@ -2,6 +2,7 @@ package pl.java.scalatech.web;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import pl.java.scalatech.exception.SimpleRestException;
 
 @RestController
 @RequestMapping("/exceptionTest")
+@Profile("webTest")
 public class ExceptionRestController {
 
     @RequestMapping("/test/{id}")
