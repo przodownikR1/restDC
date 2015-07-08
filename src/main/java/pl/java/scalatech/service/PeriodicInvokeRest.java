@@ -25,7 +25,7 @@ public class PeriodicInvokeRest {
     @Value("${server.port}")
     private String port;
 
-    @Scheduled(fixedDelay = 2500)
+    @Scheduled(fixedDelay = 5500)
     public void periodicInvokeService() {
         String url = "http://localhost:" + port + "/bankAccounts/{id}";
         long id = r.nextInt(9);
