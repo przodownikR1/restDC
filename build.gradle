@@ -74,6 +74,7 @@ dependencies {
     testCompile("org.mockito:mockito-all:$mockitoVersion")
     testCompile("junit:junit:latest.release")
     testCompile("org.easytesting:fest-assert:latest.release")
+    testCompile 'org.assertj:assertj-core:${assertjVersion}'
     
     runtime("com.h2database:h2")
     testCompile("org.springframework.boot:spring-boot-starter-test") 
