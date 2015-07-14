@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import pl.java.scalatech.interceptor.CounterInterceptor;
 import pl.java.scalatech.web.interceptor.SwaggerInterceptor;
 
 import com.netflix.hystrix.contrib.javanica.aop.aspectj.HystrixCommandAspect;
@@ -33,11 +35,14 @@ import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServl
 @Configuration
 @EnableWebMvc
 @Slf4j
-@ComponentScan(basePackages = { "pl.java.scalatech.web" }, useDefaultFilters = false, includeFilters = { @Filter(RestController.class),
-        @Filter(Controller.class) })
+@ComponentScan(basePackages = { "pl.java.scalatech.web", "pl.java.scalatech.interceptor" }, useDefaultFilters = false, includeFilters = {
+        @Filter(RestController.class), @Filter(Controller.class), @Filter(Component.class) })
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private Environment env;
+
+    @Autowired
+    CounterInterceptor counterInterceptor;
 
     @Bean
     public ServletRegistrationBean servletRegistrationBean() {
@@ -65,6 +70,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SwaggerInterceptor());
+        registry.addInterceptor(counterInterceptor);
     }
 
     @Value("${session-timeout}")

@@ -1,7 +1,6 @@
 package pl.java.scalatech.config;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -16,7 +15,6 @@ import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 import pl.java.scalatech.metrics.BasicHealthCheck;
@@ -29,7 +27,6 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.codahale.metrics.health.jvm.ThreadDeadlockHealthCheck;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
@@ -43,7 +40,7 @@ import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 @Configuration
 @EnableMetrics
 @Slf4j
-@Profile("dev")
+//@Profile("dev")
 public class Metrics2Config extends MetricsConfigurerAdapter implements EnvironmentAware {
     private static final String ENABLE_METRICS = "metrics";
     private static final String METRIC_JMX_ENABLED = "jmx.enabled";
@@ -112,13 +109,24 @@ public class Metrics2Config extends MetricsConfigurerAdapter implements Environm
 
     }
 
+    @Bean
+    public Counter asyncCounter() {
+        return METRIC_REGISTRY.counter("asyncCounter");
+    }
+
+    @Bean
+    public Counter syncCounter() {
+        return METRIC_REGISTRY.counter("syncCounter");
+    }
+
     @Override
     public void configureReporters(MetricRegistry metricRegistry) {
         log.info("+++                                        configureReporters");
         /* ConsoleReporter.forRegistry(metricRegistry).build().start(10, TimeUnit.SECONDS); */
-
-        Slf4jReporter.forRegistry(metricRegistry).outputTo(log).convertRatesTo(TimeUnit.SECONDS).convertDurationsTo(TimeUnit.MILLISECONDS).build()
-                .start(1, TimeUnit.MINUTES);
+        /*
+         * Slf4jReporter.forRegistry(metricRegistry).outputTo(log).convertRatesTo(TimeUnit.SECONDS).convertDurationsTo(TimeUnit.MILLISECONDS).build()
+         * .start(1, TimeUnit.MINUTES);
+         */
 
         /*
          * CsvReporter reporter = CsvReporter.forRegistry(metricRegistry).formatFor(Locale.US).convertRatesTo(TimeUnit.SECONDS)
@@ -140,19 +148,24 @@ public class Metrics2Config extends MetricsConfigurerAdapter implements Environm
     }
 
     @Bean
-    @Autowired
-    public ServletRegistrationBean servletRegistrationBean(MetricRegistry metricRegistry) {
-        MetricsServlet ms = new MetricsServlet(metricRegistry);
-        ServletRegistrationBean srb = new ServletRegistrationBean(ms, "/stats/*");
-        srb.setLoadOnStartup(1);
-        return srb;
+    public MetricsServlet metricsServlet(MetricRegistry metricRegistry) {
+        return new MetricsServlet(metricRegistry);
+    }
+
+    @Bean
+    public ServletRegistrationBean metricsRegistration(MetricsServlet metricsServlet) {
+        ServletRegistrationBean registration = new ServletRegistrationBean(metricsServlet);
+        registration.setLoadOnStartup(1);
+        registration.addUrlMappings("/api/metrics/metrics/*");
+        return registration;
     }
 
     @Bean
     @Autowired
     public ServletRegistrationBean servletHealthRegistryBean(HealthCheckRegistry healthCheckRegistry) {
         HealthCheckServlet hc = new HealthCheckServlet(healthCheckRegistry);
-        ServletRegistrationBean srb = new ServletRegistrationBean(hc, "/health/*");
+        log.info("+++  init /health/");
+        ServletRegistrationBean srb = new ServletRegistrationBean(hc, "/api/metrics/health");
         srb.setLoadOnStartup(2);
         return srb;
     }

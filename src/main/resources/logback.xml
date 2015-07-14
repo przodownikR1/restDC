@@ -94,14 +94,14 @@
 	<logger name="org.springframework.data" level="warn" />
 	<logger name="org.springframework.security" level="info" />
 	
-	<logger name="org.hibernate.SQL" additivity="false">
+	<!-- <logger name="org.hibernate.SQL" additivity="false">
        <level value="DEBUG" />
        <appender-ref ref="SQL_FILE" />
     </logger>
     <logger name="org.hibernate.type" additivity="false">
       <level value="TRACE" />
       <appender-ref ref="SQL_FILE" />
-    </logger>
+    </logger> -->
 	
     <root>
      <level value="OFF" />
