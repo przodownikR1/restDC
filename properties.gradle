@@ -15,4 +15,5 @@ ext {
       codahale="3.0.2"
       httpClientVersion="4.3.5"
        servletVersion = "3.1.0"
+       assertjVersion = "3.1.0"
 }

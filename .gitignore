@@ -56,7 +56,6 @@ local.properties
 .classpath
 .settings/
 .loadpath
-/src/main/resources/rebel.xml
 # External tool builders
 .externalToolBuilders/
 
@@ -78,9 +77,4 @@ local.properties
 #
 *~
 
-gc.log
-/mongoDB-springBoot.log
-/file_from_fd_store.png
-/batchCamp.log
-batchCamp.log
 *.log
