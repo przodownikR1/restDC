@@ -88,11 +88,11 @@ public class UserInfoController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteSeries(@PathVariable("id") long id) {
         User loaded = userRepository.findOne(id);
         if (loaded != null) {
             userAccountService.removeUser(loaded);
+            return ResponseEntity.noContent().build();
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
